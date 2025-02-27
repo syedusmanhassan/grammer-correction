@@ -1,6 +1,9 @@
 import { useState } from "react";
 import "./login.css"
+// import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
+
+
 
 
 const Login = () => {
@@ -22,7 +25,7 @@ const Login = () => {
   };
 
   return (
-    <div class="conatainer">
+    <div className="container">
         <form className="form-signin" onSubmit={handleSubmit}>
           <div className="imgDiv">
             <img className="mb-4 center" src="grammerCheck.png" alt=""  />
