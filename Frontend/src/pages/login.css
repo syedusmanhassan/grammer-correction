@@ -3,7 +3,7 @@ html, body{
   height: 100vh;
   background-color: burlywood;
 }
-.container{
+.main-container{
   display: flex !important;
   justify-content: center;
   align-items: center;
