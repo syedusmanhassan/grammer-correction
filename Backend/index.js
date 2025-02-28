@@ -3,13 +3,14 @@ import pg from "pg";
 import bodyParser from "body-parser";
 import cors from "cors";
 import {OpenAI} from "openai"
+import { config as configDotenv } from "dotenv";
 
-
+configDotenv();
 const app = express();
 const port = 5000;
 
 const db = new pg.Client({
- connectionString:'postgresql://postgres:JQBWTQtbnSMXGoTIQekHIbrwUSkaKhSY@yamabiko.proxy.rlwy.net:49831/railway',
+ connectionString:process.env.DATABASE_URL,
  ssl: { rejectUnauthorized: false },
 });
 db.connect();
@@ -43,7 +44,7 @@ app.post("/login", async (req, res) => {
 
 
 const openai = new OpenAI({
-  apiKey: "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", // Replace with your OpenAI API key
+  apiKey: process.env.OPENAI_KEY
 });
 
 app.post("/check-grammar", async (req, res) => {
