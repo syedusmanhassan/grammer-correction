@@ -21,7 +21,7 @@ const Dashboard = () => {
 
     const timeoutId = setTimeout(async () => {
       try {
-        const response = await axios.post("http://localhost:5000/check-grammar", {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/check-grammar`, {
           text: inputText,
         });
         const incorrectWordsList = response.data.identifiedIncorrectWords.split(",").map((word) => word.trim());
