@@ -44,7 +44,7 @@ app.post("/login", async (req, res) => {
 
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_KEY
+  apiKey: process.env.OPENAI_KEY,
 });
 
 app.post("/check-grammar", async (req, res) => {
@@ -57,12 +57,21 @@ app.post("/check-grammar", async (req, res) => {
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      // model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content:
-            "You are a helpful grammar checker. Identify any grammar or spelling mistakes in the given text. Return the only incorrect words. Format the response as follows: [ only incorrect words ] ",
+          content: `
+            You are a grammar checker. 
+            Identify grammar or spelling mistakes in the given text and return ONLY a JSON object.
+
+            Example format:
+            {
+              "incorrectWords": ["word1", "word2"],
+              "correctedSentence": "Corrected version of the text."
+            }
+
+            Strictly return ONLY valid JSON.
+          `,
         },
         {
           role: "user",
@@ -70,12 +79,17 @@ app.post("/check-grammar", async (req, res) => {
         },
       ],
     });
-    const identifiedIncorrectWords = response.choices[0].message.content;
-    res.json({ identifiedIncorrectWords });
-  }
-  catch (error) {
-    console.error("OpenAI API error:", error);
-    res.status(500).json({ error: "Failed to check grammar" });
+
+    const responseText = response.choices[0].message.content.trim();
+    const result = JSON.parse(responseText); 
+    res.json({
+      identifiedIncorrectWords: result.incorrectWords.join(", "),
+      correctedSentence: result.correctedSentence,
+    });
+
+  } catch (error) {
+    console.error("OpenAI API error:", error.response ? error.response.data : error.message);
+    res.status(500).json({ error: "Failed to check grammar", details: error.response ? error.response.data : error.message });
   }
 });
 
